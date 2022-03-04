@@ -43,12 +43,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 // @Config
 public class Arm {
     private Servo pince_servo;
-    private DcMotorEx arm_motor;
+    public DcMotorEx arm_motor;
 
     private Telemetry telemetry;
 
     private double position;
-    private int velocity;
+    private int velocity = 0;
 
     private static int openPosition = 0;   // requires testing
     private static int closePosition = 1;// requires testing
@@ -60,11 +60,19 @@ public class Arm {
         pince_servo = hardwareMap.get(Servo.class, "bucket_servo"); pince_servo.setDirection(Servo.Direction.FORWARD);
     }
     public void keepPosition(int ticks, double DeltaT){
+        // ticks = position voulue, DeltaT = différence de temps
+        /*
+            soit p = position:
+            différence est: (p-ticks+250)%500-250
+         */
+        int diff = ((arm_motor.getCurrentPosition()/25*3-ticks+250)%500-250);
         telemetry.addData("delta", DeltaT);
-        telemetry.addData("ticks", arm_motor.getCurrentPosition());
-        velocity = (int) Math.min(Math.max(((arm_motor.getCurrentPosition()-ticks)/DeltaT),-2e3),2e3);
+        telemetry.addData("ticks", arm_motor.getCurrentPosition()/25*3);
+        telemetry.addData("différence", diff);
+        velocity = (int) Math.min(Math.max((diff/DeltaT),-1e3),1e3);
         telemetry.addData("velocity",velocity);
     }
+    public int getPosition(){ return arm_motor.getCurrentPosition()/25*3; }
     public void openGripper(){
         position = openPosition;
     }
@@ -78,6 +86,6 @@ public class Arm {
 
         arm_motor.setVelocity(velocity);
         telemetry.addData("Arm Velocity", velocity);
-        telemetry.addData("Current arm position", arm_motor.getCurrentPosition());
+        telemetry.addData("Current arm position", getPosition());
     }
 }

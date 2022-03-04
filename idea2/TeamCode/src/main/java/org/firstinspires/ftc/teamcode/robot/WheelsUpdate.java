@@ -10,7 +10,7 @@ import java.util.List;
 public class WheelsUpdate {
     private DcMotor[] wheels;
     private static Vector[] positions = Consts.WHEELS_POSITIONS; // to be calculated
-    private static float[] diameters = Consts.WHEELS_DIAMETERS; // mm
+    private static float[] diameters = Consts.WHEELS_DIAMETERS; //  mm
     private static Vector[] directions = Consts.WHEELS_DIRECTIONS;
     private Vector[] estim_pos = new Vector[4];
     private int[] ticks = new int[4];

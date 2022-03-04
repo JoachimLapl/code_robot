@@ -54,6 +54,7 @@ public class ManualOpMode2  extends OpMode {
         movement.gamepadMoves(gamepad1);
 
         telemetry.addData("a,b", String.valueOf(gamepad1.a)+','+String.valueOf(gamepad1.b));
+        /*
         if (gamepad1.a) {
             if (gamepad1.b){
                 arm.keepPosition(500, DeltaT);
@@ -74,6 +75,10 @@ public class ManualOpMode2  extends OpMode {
         } else {
             carousel.reset();
         }
+        */
+        arm.keepPosition(-84, DeltaT);
+        telemetry.addData("ticks", arm.arm_motor.getCurrentPosition());
+
 
 
         arm.apply();
