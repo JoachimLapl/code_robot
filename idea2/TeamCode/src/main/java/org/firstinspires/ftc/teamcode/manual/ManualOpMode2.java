@@ -55,18 +55,29 @@ public class ManualOpMode2  extends OpMode {
 
         telemetry.addData("a,b", String.valueOf(gamepad1.a)+','+String.valueOf(gamepad1.b));
 
+        /*
         if (gamepad1.a) {
             if (gamepad1.b){
-                arm.keepPosition(-345, DeltaT);
+                arm.keepPosition(-360, DeltaT);
             }else{
-                arm.keepPosition(-147, DeltaT);
+                arm.keepPosition(-303, DeltaT);
             }
         } else if (gamepad1.b) {
-            arm.keepPosition(-258, DeltaT);
+            arm.keepPosition(-342, DeltaT);
         } else {
-            telemetry.addData("entered","0");
-            arm.keepPosition(-18, DeltaT);
+            arm.keepPosition(-6, DeltaT);
         }
+         */
+        if (gamepad1.a){
+            arm.setPresetPosition(0);
+        } else if (gamepad1.b){
+            arm.setPresetPosition(1);
+        } else if (gamepad1.x){
+            arm.setPresetPosition(2);
+        } else if (gamepad1.y){
+            arm.setPresetPosition(3);
+        }
+        arm.movestick(gamepad1);
 /*
         if (gamepad1.right_bumper){
             carousel.maxSpeed();
@@ -84,7 +95,7 @@ public class ManualOpMode2  extends OpMode {
 
 
 
-        arm.apply();
+        arm.apply(DeltaT);
         carousel.apply();
         lastRuntime = runtime.time();
         telemetry.update();

@@ -53,39 +53,51 @@ public class Arm {
     private static int openPosition = 0;   // requires testing
     private static int closePosition = 1;// requires testing
 
+    public static double[] preset = { -6,-303,-342,-360 };
+    public double arm_pos = -6;
+
 
     public Arm(Telemetry globalTelemetry, HardwareMap hardwareMap) {
         telemetry = globalTelemetry;
         arm_motor = hardwareMap.get(DcMotorEx.class, "arm_motor"); arm_motor.setDirection(DcMotorEx.Direction.FORWARD);
         pince_servo = hardwareMap.get(Servo.class, "bucket_servo"); pince_servo.setDirection(Servo.Direction.FORWARD);
     }
-    public void keepPosition(int ticks, double DeltaT){
+    public void keepPosition(double ticks, double DeltaT){
         // ticks = position voulue, DeltaT = différence de temps
         /*
             soit p = position:
             différence est: (p-ticks+250)%500-250
          */
-        int diff = ((arm_motor.getCurrentPosition()/25*3-ticks+250)%500-250);
-        telemetry.addData("delta", DeltaT);
+        double diff = ((getPosition()-ticks)%500);
         telemetry.addData("ticks", arm_motor.getCurrentPosition()/25*3);
         telemetry.addData("différence", diff);
-        velocity = (int) Math.min(Math.max((diff/DeltaT),-1e3),1e3);
+        velocity = (int) Math.min(Math.max(diff/DeltaT,-1e3),1e3);
         telemetry.addData("velocity",velocity);
     }
-    public int getPosition(){ return arm_motor.getCurrentPosition()/25*3; }
+    public void movestick(Gamepad gamepad) {
+        arm_pos += gamepad.right_stick_y;
+    }
+    public double getPosition(){ return ((double)arm_motor.getCurrentPosition())/25*3; }
+    public void setPresetPosition(int n){ arm_pos = preset[n]; }
     public void openGripper(){
         position = openPosition;
     }
     public void closeGripper(){
         position = closePosition;
     }
-    public void apply() {
-
+    public void apply(double DeltaT) {
         pince_servo.setPosition(position);
         telemetry.addData("pince position", position);
+        telemetry.addData("velocity", velocity);
 
-        arm_motor.setVelocity(velocity);
-        telemetry.addData("Arm Velocity", velocity);
+        keepPosition(arm_pos, DeltaT);
+        if ((getPosition()>-393 && velocity<0) || (getPosition()<-9 && velocity>0)) {
+            arm_motor.setVelocity(velocity);
+            telemetry.addData("Arm Velocity", velocity);
+        } else {
+            arm_motor.setPower(0);
+            telemetry.addData("Arm Velocity", 0);
+        }
         telemetry.addData("Current arm position", getPosition());
     }
 }
