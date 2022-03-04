@@ -54,20 +54,20 @@ public class ManualOpMode2  extends OpMode {
         movement.gamepadMoves(gamepad1);
 
         telemetry.addData("a,b", String.valueOf(gamepad1.a)+','+String.valueOf(gamepad1.b));
-        /*
+
         if (gamepad1.a) {
             if (gamepad1.b){
-                arm.keepPosition(500, DeltaT);
+                arm.keepPosition(-345, DeltaT);
             }else{
-                arm.keepPosition(400, DeltaT);
+                arm.keepPosition(-147, DeltaT);
             }
         } else if (gamepad1.b) {
-            arm.keepPosition(300, DeltaT);
+            arm.keepPosition(-258, DeltaT);
         } else {
             telemetry.addData("entered","0");
-            arm.keepPosition(0, DeltaT);
+            arm.keepPosition(-18, DeltaT);
         }
-
+/*
         if (gamepad1.right_bumper){
             carousel.maxSpeed();
         } else if (gamepad1.left_bumper){
@@ -76,7 +76,10 @@ public class ManualOpMode2  extends OpMode {
             carousel.reset();
         }
         */
-        arm.keepPosition(-84, DeltaT);
+        // -18
+        // -147
+        // -258
+        // -345
         telemetry.addData("ticks", arm.arm_motor.getCurrentPosition());
 
 
