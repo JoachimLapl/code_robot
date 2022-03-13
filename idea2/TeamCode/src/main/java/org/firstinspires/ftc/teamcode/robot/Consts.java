@@ -20,7 +20,12 @@ public class Consts { // units: mm, rad
     // LF  RF  RB  LB
     public static Vector[] WHEELS_POSITIONS = {new Vector(0,0), new Vector(0,0), new Vector(0,0), new Vector(0,0)};
     public static float[] WHEELS_DIAMETERS = {127, 127, 127, 127}; // mm
-    public static Vector[] WHEELS_DIRECTIONS = {new Vector(0,1), new Vector(0,-1), new Vector(0,-1), new Vector(0,1)} ;
+    public static Vector[] WHEELS_DIRECTIONS = {
+            new Vector(0,1).multiply(Math.PI/250*WHEELS_DIAMETERS[0]),
+            new Vector(0,-1).multiply(Math.PI/250*WHEELS_DIAMETERS[0]),
+            new Vector(0,-1).multiply(Math.PI/250*WHEELS_DIAMETERS[0]),
+            new Vector(0,1).multiply(Math.PI/250*WHEELS_DIAMETERS[0])
+    };
 
     /* Motors */
     public static int N_Ticks = 500;

@@ -10,10 +10,12 @@ public class Vector {
     public double x;
     public double y;
     public double norm;
+    public int dimension;
     public Vector(double a, double b) {
         x = a;
         y = b;
         norm = Math.sqrt(Math.pow(a,2)+Math.pow(b,2));
+        dimension = 2;
     }
     public Vector plus(Vector v){
         return new Vector(x+v.x,y+v.y);
@@ -31,12 +33,12 @@ public class Vector {
     public double getAngle(){
         return y>0 ? Math.acos(x/norm) : -Math.acos(x/norm);
     }
-    public Vector rotate(Vector v, Boolean trigo){
+    public Vector rotate(Vector v, boolean trigo){
         //v = v.setToNorm(1);
         int coef = trigo ? 1: -1;
         return new Vector(v.x*x-v.y*y*coef,v.x*y+v.y*x*coef); // ne conserve pas la norme (norm = v.norm*u.norm)
     }
-    public Vector rotate(double n, Boolean trigo){ return rotate(new Vector(Math.cos(n), Math.sin(n)), trigo); }
+    public Vector rotate(double n, boolean trigo){ return rotate(new Vector(Math.cos(n), Math.sin(n)), trigo); }
     public Vector rotate(double n){ return rotate(n, true); }
     public Vector rotate(Vector v){ return rotate(v, true); }
 }

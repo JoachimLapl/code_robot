@@ -35,6 +35,7 @@ public class Carousel {
         //telemetry.addData("speed real", CarouselMotor.getVelocity());
         //telemetry.addData("power real", CarouselMotor.getPower());
         //telemetry.addData("velocity:",velocity);
+        telemetry.addData("carousel velocity", velocity);
         CarouselMotor.setVelocity(velocity);
     }
 }

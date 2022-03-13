@@ -21,6 +21,7 @@ public class ManualOpMode2  extends OpMode {
     private Movement2 movement;
     private Carousel carousel;
     private Arm arm;
+    private boolean g1a = true, g1b = true;
 
     private double lastRuntime = 0.0;
 
@@ -68,17 +69,21 @@ public class ManualOpMode2  extends OpMode {
             arm.keepPosition(-6, DeltaT);
         }
          */
-        if (gamepad1.a){
-            arm.setPresetPosition(0);
-        } else if (gamepad1.b){
-            arm.setPresetPosition(1);
-        } else if (gamepad1.x){
-            arm.setPresetPosition(2);
-        } else if (gamepad1.y){
-            arm.setPresetPosition(3);
+        if (gamepad1.a && !g1a){
+            arm.toNewPreset(1);
+        } else if (gamepad1.b && !g1b){
+            arm.toNewPreset(-1);
         }
+        g1a = gamepad1.a;
+        g1b = gamepad1.b;
+        if (gamepad1.x){
+            arm.openGripper();
+        } else if (gamepad1.y){
+            arm.closeGripper();
+        };
+
         arm.movestick(gamepad1);
-/*
+
         if (gamepad1.right_bumper){
             carousel.maxSpeed();
         } else if (gamepad1.left_bumper){
@@ -86,17 +91,14 @@ public class ManualOpMode2  extends OpMode {
         } else {
             carousel.reset();
         }
-        */
-        // -18
-        // -147
-        // -258
-        // -345
+
         telemetry.addData("ticks", arm.arm_motor.getCurrentPosition());
 
 
 
         arm.apply(DeltaT);
         carousel.apply();
+        movement.apply();
         lastRuntime = runtime.time();
         telemetry.update();
     }

@@ -51,34 +51,35 @@ public class Arm {
     private int velocity = 0;
 
     private static int openPosition = 0;   // requires testing
-    private static int closePosition = 1;// requires testing
+    private static int closePosition = 180;// requires testing
 
     public static double[] preset = { -6,-303,-342,-360 };
     public double arm_pos = -6;
+    public double relative;
+    private int pos_index = 0;
 
 
     public Arm(Telemetry globalTelemetry, HardwareMap hardwareMap) {
         telemetry = globalTelemetry;
         arm_motor = hardwareMap.get(DcMotorEx.class, "arm_motor"); arm_motor.setDirection(DcMotorEx.Direction.FORWARD);
+        relative = getPosition();
         pince_servo = hardwareMap.get(Servo.class, "bucket_servo"); pince_servo.setDirection(Servo.Direction.FORWARD);
     }
-    public void keepPosition(double ticks, double DeltaT){
-        // ticks = position voulue, DeltaT = différence de temps
-        /*
-            soit p = position:
-            différence est: (p-ticks+250)%500-250
-         */
-        double diff = ((getPosition()-ticks)%500);
-        telemetry.addData("ticks", arm_motor.getCurrentPosition()/25*3);
-        telemetry.addData("différence", diff);
-        velocity = (int) Math.min(Math.max(diff/DeltaT,-1e3),1e3);
-        telemetry.addData("velocity",velocity);
+    public void keepPosition(double ticks, double DeltaT) {
+        double diff = ((getPosition()+ticks+100-relative)%500-100);
+        //telemetry.addData("deltaA", diff);
+        velocity = (int) Math.min(Math.max(diff/DeltaT/5,-2e3),2e3);
+        //telemetry.addData("velocity",velocity);
     }
     public void movestick(Gamepad gamepad) {
         arm_pos += gamepad.right_stick_y;
     }
     public double getPosition(){ return ((double)arm_motor.getCurrentPosition())/25*3; }
-    public void setPresetPosition(int n){ arm_pos = preset[n]; }
+    public void setPresetPosition(int n){ Math.max(Math.min(pos_index = n,3),0); arm_pos = preset[n]; }
+    public void toNewPreset(int index){
+        pos_index = Math.max(Math.min(pos_index+index, 3),0);
+        arm_pos = preset[pos_index];
+    }
     public void openGripper(){
         position = openPosition;
     }
@@ -86,18 +87,23 @@ public class Arm {
         position = closePosition;
     }
     public void apply(double DeltaT) {
+        //telemetry.addData("index", pos_index);
+        //telemetry.addData("pos", arm_pos);
         pince_servo.setPosition(position);
-        telemetry.addData("pince position", position);
-        telemetry.addData("velocity", velocity);
+        //telemetry.addData("pince position", position);
+        //telemetry.addData("velocity", velocity);
 
         keepPosition(arm_pos, DeltaT);
+
+        arm_motor.setVelocity(velocity);
+        //telemetry.addData("Arm Velocity", velocity);
+        /*
         if ((getPosition()>-393 && velocity<0) || (getPosition()<-9 && velocity>0)) {
-            arm_motor.setVelocity(velocity);
-            telemetry.addData("Arm Velocity", velocity);
         } else {
             arm_motor.setPower(0);
             telemetry.addData("Arm Velocity", 0);
         }
-        telemetry.addData("Current arm position", getPosition());
+         */
+        //telemetry.addData("Current arm position", getPosition());
     }
 }
