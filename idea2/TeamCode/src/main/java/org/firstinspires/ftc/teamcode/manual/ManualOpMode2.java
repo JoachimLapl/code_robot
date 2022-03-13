@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.robot.Movement2;
 
 @TeleOp(name="Manual")
 public class ManualOpMode2  extends OpMode {
-    // salut
+    // joachim
 
     //////////////////////////////////////////////////////// CLASS MEMBERS /////////////////////////////////////////////////////////
 
