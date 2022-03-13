@@ -50,51 +50,38 @@ public class ManualOpMode2  extends OpMode {
     public void loop() {
         movement.update();
 
-        double DeltaT = lastRuntime - runtime.time();
+        double DeltaT = lastRuntime - runtime.time(); // la différence de temps
 
-        movement.gamepadMoves(gamepad1);
+        //------ Wheels ------//
+        movement.gamepadMoves(gamepad1); // basically does all the motions asked by player through gamepad
 
         telemetry.addData("a,b", String.valueOf(gamepad1.a)+','+String.valueOf(gamepad1.b));
 
-        /*
-        if (gamepad1.a) {
-            if (gamepad1.b){
-                arm.keepPosition(-360, DeltaT);
-            }else{
-                arm.keepPosition(-303, DeltaT);
-            }
-        } else if (gamepad1.b) {
-            arm.keepPosition(-342, DeltaT);
-        } else {
-            arm.keepPosition(-6, DeltaT);
-        }
-         */
-        if (gamepad1.a && !g1a){
+        //------ Arm ------//
+        if (gamepad1.a && !g1a){ // if we press a, we go to the next preset position
             arm.toNewPreset(1);
-        } else if (gamepad1.b && !g1b){
+        } else if (gamepad1.b && !g1b){ // if we press b, we go to the previous preset position
             arm.toNewPreset(-1);
         }
-        g1a = gamepad1.a;
-        g1b = gamepad1.b;
+        g1a = gamepad1.a; // so if we press a button then it doesn't stay pressed all the time
+        g1b = gamepad1.b; // same thing
         if (gamepad1.x){
             arm.openGripper();
         } else if (gamepad1.y){
             arm.closeGripper();
         };
-
         arm.movestick(gamepad1);
 
+        //------ Carousel ------//
         if (gamepad1.right_bumper){
             carousel.maxSpeed();
         } else if (gamepad1.left_bumper){
-            carousel.increaseSpeed();
+            carousel.increaseSpeed();// TODO: that thing doesn't seem to work
         } else {
             carousel.reset();
         }
 
         telemetry.addData("ticks", arm.arm_motor.getCurrentPosition());
-
-
 
         arm.apply(DeltaT);
         carousel.apply();

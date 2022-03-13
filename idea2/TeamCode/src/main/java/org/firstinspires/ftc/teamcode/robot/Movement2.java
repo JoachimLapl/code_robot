@@ -78,7 +78,6 @@ public class Movement2 {
     private Telemetry telemetry;
     private Vector orientation = new Vector(1,0);
     private Vector motion = new Vector(0,0);
-    public Position2 position;
 
     public Movement2(Telemetry globalTelemetry, ElapsedTime globalRuntime, HardwareMap hardwareMap) {
         telemetry = globalTelemetry;
@@ -90,7 +89,6 @@ public class Movement2 {
         telemetry.addData("movement", "init");
         telemetry.update();
         wheels_update = new WheelsUpdate(telemetry, FLmotor,FRmotor,BLmotor,BRmotor);
-        position = new Position2(telemetry);
     }
 
     @Deprecated
@@ -120,9 +118,9 @@ public class Movement2 {
     }
 
     public double pointTowards(Vector point){
-        Vector vA = point.minus(position.position);
+        Vector vA = point.minus(wheels_update.position);
         double angle = vA.getAngle();
-        double currentAngle = position.orientation.getAngle();
+        double currentAngle = wheels_update.orientation.getAngle();
         double offset = angle - currentAngle;
         if (0 < offset && offset < 250 || offset < -250){
             turn = 1;
@@ -138,7 +136,8 @@ public class Movement2 {
     }
 
     public void update(){
-        Vector[] motion = wheels_update.update();
-        position.apply(motion);
+        wheels_update.update();
+        telemetry.addData("position", wheels_update.position);
+        telemetry.addData("angle", wheels_update.orientation.getAngle()*180/Math.PI);
     }
 }
