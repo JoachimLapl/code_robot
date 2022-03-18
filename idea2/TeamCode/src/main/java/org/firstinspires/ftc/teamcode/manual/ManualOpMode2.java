@@ -33,6 +33,7 @@ public class ManualOpMode2  extends OpMode {
         movement = new Movement2(telemetry, runtime, hardwareMap);
         carousel = new Carousel(telemetry, runtime, hardwareMap);
         arm = new Arm(telemetry, hardwareMap);
+        arm.openGripper();
     }
 
     @Override
