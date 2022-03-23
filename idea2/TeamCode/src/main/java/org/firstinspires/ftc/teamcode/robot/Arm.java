@@ -53,8 +53,8 @@ public class Arm {
     private static double openPosition = 0.8;         // requires testing
     private static double closePosition = 0.5;        // requires testing
 
-    public static double[] preset = { -6,-303,-342,-360 };
-    public double arm_pos = -6;
+    public static double[] preset = { 6,-290,-322,-352 };
+    public double arm_pos = 6;
     public double relative;
     private int pos_index = 0;
 
