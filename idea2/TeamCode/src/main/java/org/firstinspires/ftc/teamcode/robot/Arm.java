@@ -50,7 +50,7 @@ public class Arm {
     private double position;
     private int velocity = 0;
 
-    private static double openPosition = 0.9;         // requires testing
+    private static double openPosition = 0.8;         // requires testing
     private static double closePosition = 0.5;        // requires testing
 
     public static double[] preset = { -6,-303,-342,-360 };

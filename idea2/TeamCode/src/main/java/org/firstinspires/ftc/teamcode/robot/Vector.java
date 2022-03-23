@@ -31,7 +31,7 @@ public class Vector {
         return multiply(norm == 0 ? 0 : s/norm);
     }
     public double getAngle(){
-        return y>0 ? Math.acos(x/norm) : -Math.acos(x/norm);
+        return x==0 && y==0 ? 0 : y>0 ? Math.acos(x/norm) : -Math.acos(x/norm);
     }
     public Vector rotate(Vector v, boolean trigo){
         //v = v.setToNorm(1);
@@ -41,4 +41,5 @@ public class Vector {
     public Vector rotate(double n, boolean trigo){ return rotate(new Vector(Math.cos(n), Math.sin(n)), trigo); }
     public Vector rotate(double n){ return rotate(n, true); }
     public Vector rotate(Vector v){ return rotate(v, true); }
+    public String toStr() {return String.valueOf(x)+","+String.valueOf(y); }
 }

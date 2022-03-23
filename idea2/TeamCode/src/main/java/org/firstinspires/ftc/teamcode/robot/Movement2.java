@@ -137,7 +137,7 @@ public class Movement2 {
 
     public void update(){
         wheels_update.update();
-        telemetry.addData("position", wheels_update.position);
+        telemetry.addData("position", wheels_update.position.toStr());
         telemetry.addData("angle", wheels_update.orientation.getAngle()*180/Math.PI);
     }
 }
