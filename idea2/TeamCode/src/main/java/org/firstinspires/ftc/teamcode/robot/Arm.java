@@ -53,8 +53,8 @@ public class Arm {
     private static double openPosition = 0.8;         // requires testing
     private static double closePosition = 0.5;        // requires testing
 
-    public static double[] preset = { -6,-303,-342,-360 };
-    public double arm_pos = -6;
+    public static double[] preset = { 0, -10, -303, -342, -360 };
+    public double arm_pos = preset[0];
     public double relative;
     private int pos_index = 0;
 
@@ -67,17 +67,15 @@ public class Arm {
     }
     public void keepPosition(double ticks, double DeltaT) {
         double diff = ((getPosition()+ticks+100-relative)%500-100);
-        //telemetry.addData("deltaA", diff);
         velocity = (int) Math.min(Math.max(diff/DeltaT/5,-2e3),2e3);
-        //telemetry.addData("velocity",velocity);
     }
     public void movestick(Gamepad gamepad) {
         arm_pos += gamepad.right_stick_y;
     }
     public double getPosition() { return ((double)arm_motor.getCurrentPosition())/25*3; }
-    public void setPresetPosition(int n) { Math.max(Math.min(pos_index = n,3),0); arm_pos = preset[n]; }
+    public void setPresetPosition(int n) { Math.max(Math.min(pos_index = n,4),0); arm_pos = preset[n]; }
     public void toNewPreset(int index) {
-        pos_index = Math.max(Math.min(pos_index+index, 3),0);
+        pos_index = Math.max(Math.min(pos_index+index, 4),0);
         arm_pos = preset[pos_index];
     }
     public void openGripper() {

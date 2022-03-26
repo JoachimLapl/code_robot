@@ -53,6 +53,7 @@ public class ManualOpMode2  extends OpMode {
         movement.update();
 
         double DeltaT = lastRuntime - runtime.time(); // la différence de temps
+        telemetry.addData("time", runtime.time());
 
         //------ Wheels ------//
         movement.gamepadMoves(gamepad1); // basically does all the motions asked by player through gamepad

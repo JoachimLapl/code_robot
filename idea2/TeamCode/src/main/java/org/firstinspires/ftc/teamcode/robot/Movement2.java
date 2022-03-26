@@ -78,6 +78,7 @@ public class Movement2 {
     private Telemetry telemetry;
     private Vector orientation = new Vector(1,0);
     private Vector motion = new Vector(0,0);
+    private double[] powers = { 0, 0 };
 
     public Movement2(Telemetry globalTelemetry, ElapsedTime globalRuntime, HardwareMap hardwareMap) {
         telemetry = globalTelemetry;
@@ -111,10 +112,16 @@ public class Movement2 {
     }
 
     public void apply() {
-        FLmotor.setPower(Range.clip(front + turn, -1.0, 1.0));
-        FRmotor.setPower(Range.clip(front - turn, -1.0, 1.0));
-        BLmotor.setPower(Range.clip(front + turn, -1.0, 1.0));
-        BRmotor.setPower(Range.clip(front - turn, -1.0, 1.0));
+        double[] i = {front + turn,front - turn};
+        powers[0] = (powers[0]+(i[0] - powers[0])/25)*(i[0]==0?0:1);
+        powers[1] = (powers[1]+(i[1] - powers[1])/25)*(i[1]==0?0:1);
+        telemetry.addData("power1", powers[0]);
+        telemetry.addData("i1", i[0]);
+        telemetry.addData("power2", powers[1]);
+        FLmotor.setPower(Range.clip(powers[0], -1.0, 1.0));
+        FRmotor.setPower(Range.clip(powers[1], -1.0, 1.0));
+        BLmotor.setPower(Range.clip(powers[0], -1.0, 1.0));
+        BRmotor.setPower(Range.clip(powers[1], -1.0, 1.0));
     }
 
     public double pointTowards(Vector point){

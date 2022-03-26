@@ -62,7 +62,7 @@ public class WheelsUpdate {
             Vector n_pos = r_pos.rotate(-a);
             middleVec = n_pos.plus(perp_traj);
         }
-        orientation = orientation.rotate(v);
-        position = position.plus(middleVec);
+        orientation.rotate(v);
+        position.plus(middleVec);
     }
 }
