@@ -31,7 +31,7 @@ public class WheelsUpdate {
     private Vector getMiddle(Vector ...v){
         Vector u = new Vector(0,0);
         for (Vector a:v) { u = u.plus(a); }
-        return u.multiply(1/v.length);
+        return u.multiply(1/(float)v.length);
     }
     public void update() {
         int[] n_ticks = new int[4];
@@ -62,7 +62,8 @@ public class WheelsUpdate {
             Vector n_pos = r_pos.rotate(-a);
             middleVec = n_pos.plus(perp_traj);
         }
-        orientation.rotate(v);
-        position.plus(middleVec);
+        telemetry.addData("mult", new Vector(0,1).multiply(2).toStr());
+        orientation = orientation.rotate(v);
+        position = position.plus(middleVec);
     }
 }

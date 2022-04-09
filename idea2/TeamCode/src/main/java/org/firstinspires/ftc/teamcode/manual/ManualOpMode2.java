@@ -11,6 +11,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import org.firstinspires.ftc.teamcode.robot.Arm;
 import org.firstinspires.ftc.teamcode.robot.Carousel;
 import org.firstinspires.ftc.teamcode.robot.Movement2;
+import org.firstinspires.ftc.teamcode.robot.Vector;
 
 @TeleOp(name="Manual")
 public class ManualOpMode2  extends OpMode {
@@ -74,7 +75,9 @@ public class ManualOpMode2  extends OpMode {
             arm.closeGripper();
         };
         arm.movestick(gamepad1);
-
+        if (gamepad1.start){
+            movement.pointTowards(new Vector(0,0));
+        }
         //------ Carousel ------//
         if (gamepad1.right_bumper){
             carousel.maxSpeed();

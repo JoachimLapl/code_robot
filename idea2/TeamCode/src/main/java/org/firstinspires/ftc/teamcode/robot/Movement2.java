@@ -115,9 +115,9 @@ public class Movement2 {
         double[] i = {front + turn,front - turn};
         powers[0] = (powers[0]+(i[0] - powers[0])/25)*(i[0]==0?0:1);
         powers[1] = (powers[1]+(i[1] - powers[1])/25)*(i[1]==0?0:1);
-        telemetry.addData("power1", powers[0]);
-        telemetry.addData("i1", i[0]);
-        telemetry.addData("power2", powers[1]);
+        //telemetry.addData("power1", powers[0]);
+        //telemetry.addData("i1", i[0]);
+        //telemetry.addData("power2", powers[1]);
         FLmotor.setPower(Range.clip(powers[0], -1.0, 1.0));
         FRmotor.setPower(Range.clip(powers[1], -1.0, 1.0));
         BLmotor.setPower(Range.clip(powers[0], -1.0, 1.0));
