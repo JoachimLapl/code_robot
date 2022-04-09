@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.auto;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,8 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Came
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
-@TeleOp(name = "Concept: TensorFlow Object Detection")
-@Disabled
+@TeleOp(name = "TensorFlow Object Detection")
 public class ConceptTF extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
     private static final String[] LABELS = {"Ball","Cube","Duck","Marker"};
@@ -23,12 +22,11 @@ public class ConceptTF extends LinearOpMode {
     public void runOpMode() {
         initVuforia();
         initTfod();
-
         if (tfod != null) {
             tfod.activate();
             tfod.setZoom(2.5, 16.0 / 9.0);
         }
-
+        
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
