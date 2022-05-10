@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 
+import org.firstinspires.ftc.teamcode.robot.AccelPositioning;
 import org.firstinspires.ftc.teamcode.robot.Arm;
 import org.firstinspires.ftc.teamcode.robot.Carousel;
 import org.firstinspires.ftc.teamcode.robot.Movement2;
@@ -25,6 +26,8 @@ public class ManualOpMode2  extends OpMode {
     private Arm arm;
     private boolean g1a = true, g1b = true;
 
+    private AccelPositioning accel;
+
     private double lastRuntime = 0.0;
 
     ///////////////////////////////////////////////////////// OPMODE METHODS /////////////////////////////////////////////////////////
@@ -35,6 +38,7 @@ public class ManualOpMode2  extends OpMode {
         carousel = new Carousel(telemetry, runtime, hardwareMap);
         arm = new Arm(telemetry, hardwareMap);
         arm.openGripper();
+        accel = new AccelPositioning(hardwareMap, telemetry);
     }
 
     @Override
@@ -53,41 +57,43 @@ public class ManualOpMode2  extends OpMode {
     public void loop() {
         movement.update();
 
+        //accel.show();
+
         double DeltaT = lastRuntime - runtime.time(); // la différence de temps
         telemetry.addData("time", runtime.time());
 
         //------ Wheels ------//
         movement.gamepadMoves(gamepad1); // basically does all the motions asked by player through gamepad
 
-        telemetry.addData("a,b", String.valueOf(gamepad1.a)+','+String.valueOf(gamepad1.b));
+        //telemetry.addData("a,b", String.valueOf(gamepad1.a)+','+String.valueOf(gamepad1.b));
 
         //------ Arm ------//
-        if (gamepad1.a && !g1a){ // if we press a, we go to the next preset position
+        if (gamepad2.a && !g1a){ // if we press a, we go to the next preset position
             arm.toNewPreset(1);
-        } else if (gamepad1.b && !g1b){ // if we press b, we go to the previous preset position
+        } else if (gamepad2.b && !g1b){ // if we press b, we go to the previous preset position
             arm.toNewPreset(-1);
         }
-        g1a = gamepad1.a; // so if we press a button then it doesn't stay pressed all the time
-        g1b = gamepad1.b; // same thing
-        if (gamepad1.x){
+        g1a = gamepad2.a; // so if we press a button then it doesn't stay pressed all the time
+        g1b = gamepad2.b; // same thing
+        if (gamepad2.x){
             arm.openGripper();
-        } else if (gamepad1.y){
+        } else if (gamepad2.y){
             arm.closeGripper();
         };
-        arm.movestick(gamepad1);
-        if (gamepad1.start){
+        arm.movestick(gamepad2);
+        if (gamepad2.start){
             movement.pointTowards(new Vector(0,0));
         }
         //------ Carousel ------//
-        if (gamepad1.right_bumper){
+        if (gamepad2.right_bumper){
             carousel.maxSpeed();
-        } else if (gamepad1.left_bumper){
+        } else if (gamepad2.left_bumper){
             carousel.increaseSpeed();// TODO: that thing doesn't seem to work
         } else {
             carousel.reset();
         }
 
-        telemetry.addData("ticks", arm.arm_motor.getCurrentPosition());
+        //telemetry.addData("ticks", arm.arm_motor.getCurrentPosition());
 
         arm.apply(DeltaT);
         carousel.apply();

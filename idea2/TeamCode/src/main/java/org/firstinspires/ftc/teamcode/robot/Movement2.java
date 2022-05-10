@@ -79,17 +79,22 @@ public class Movement2 {
     private Vector orientation = new Vector(1,0);
     private Vector motion = new Vector(0,0);
     private double[] powers = { 0, 0 };
+    private static float distance_roues = 33.7f;
+    private double[] arr = {0,0,0,0};
+    private VectorN baseEncoder = new VectorN(arr);
+    public VectorN nv = new VectorN(arr);
 
     public Movement2(Telemetry globalTelemetry, ElapsedTime globalRuntime, HardwareMap hardwareMap) {
         telemetry = globalTelemetry;
         runtime = globalRuntime;
-        FLmotor = hardwareMap.get(DcMotor.class, "fl_motor"); FLmotor.setDirection(DcMotor.Direction.FORWARD);
-        FRmotor = hardwareMap.get(DcMotor.class, "fr_motor"); FRmotor.setDirection(DcMotor.Direction.FORWARD);
-        BLmotor = hardwareMap.get(DcMotor.class, "bl_motor");  BLmotor.setDirection(DcMotor.Direction.FORWARD);
-        BRmotor = hardwareMap.get(DcMotor.class, "br_motor");  BRmotor.setDirection(DcMotor.Direction.REVERSE);
+        FLmotor = hardwareMap.get(DcMotor.class, "fl_motor"); FLmotor.setDirection(DcMotor.Direction.FORWARD); FLmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FRmotor = hardwareMap.get(DcMotor.class, "fr_motor"); FRmotor.setDirection(DcMotor.Direction.FORWARD); FRmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BLmotor = hardwareMap.get(DcMotor.class, "bl_motor"); BLmotor.setDirection(DcMotor.Direction.FORWARD); BLmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BRmotor = hardwareMap.get(DcMotor.class, "br_motor"); BRmotor.setDirection(DcMotor.Direction.REVERSE); BRmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         telemetry.addData("movement", "init");
         telemetry.update();
         wheels_update = new WheelsUpdate(telemetry, FLmotor,FRmotor,BLmotor,BRmotor);
+        resetValues();
     }
 
     @Deprecated
@@ -99,12 +104,23 @@ public class Movement2 {
     }
 
     public void reset() {
+        resetValues();
         front = 0d;
         turn = 0d;
     }
 
+    public void resetValues(){
+        baseEncoder.setCoordinates(
+                FLmotor.getCurrentPosition(),
+                FRmotor.getCurrentPosition(),
+                BLmotor.getCurrentPosition(),
+                BRmotor.getCurrentPosition()
+        );
+    }
+
     public void gamepadMoves(Gamepad gamepad){
-        double lx = gamepad.left_stick_x, ly = gamepad.left_stick_y;
+        double lx = gamepad.left_stick_x+(gamepad.dpad_left?-1:0)+(gamepad.dpad_right?1:0),
+                ly = gamepad.left_stick_y+(gamepad.dpad_up?-1:0)+(gamepad.dpad_down?1:0);
         double a = Math.abs(ly), b = Math.abs(lx);
         front = a<.1 ? 0 : a<.9 ? (a-.1)*1.25*Math.signum(ly) : Math.signum(ly);
         turn = b<.1 ? 0 : b<.9 ? (b-.1)*1.25*Math.signum(lx) : Math.signum(lx);
@@ -112,6 +128,11 @@ public class Movement2 {
     }
 
     public void apply() {
+        double[] a = {FLmotor.getCurrentPosition(),FRmotor.getCurrentPosition(),BLmotor.getCurrentPosition(),BRmotor.getCurrentPosition()};
+        VectorN nv = new VectorN(a).subtract(baseEncoder);
+        telemetry.addData("baseEncoder", String.format("%s, %s, %s, %s", nv.coordinates[0], nv.coordinates[1], nv.coordinates[2], nv.coordinates[3]));
+        telemetry.addData("mean", nv.mean());
+        telemetry.addData("median", nv.median());
         double[] i = {front + turn,front - turn};
         powers[0] = (powers[0]+(i[0] - powers[0])/5)*(i[0]==0?0:1);
         powers[1] = (powers[1]+(i[1] - powers[1])/5)*(i[1]==0?0:1);
@@ -122,6 +143,9 @@ public class Movement2 {
         FRmotor.setPower(Range.clip(powers[1], -1.0, 1.0));
         BLmotor.setPower(Range.clip(powers[0], -1.0, 1.0));
         BRmotor.setPower(Range.clip(powers[1], -1.0, 1.0));
+    }
+    public double rotationIndex(){
+        return (nv.coordinates[0]+nv.coordinates[2]-nv.coordinates[1]-nv.coordinates[3])/4/3745;
     }
 
     public double pointTowards(Vector point){
@@ -143,8 +167,12 @@ public class Movement2 {
     }
 
     public void update(){
-        wheels_update.update();
-        telemetry.addData("position", wheels_update.position.toStr());
-        telemetry.addData("angle", wheels_update.orientation.getAngle()*180/Math.PI);
+        double[] a = {FLmotor.getCurrentPosition(),FRmotor.getCurrentPosition(),BLmotor.getCurrentPosition(),BRmotor.getCurrentPosition()};
+        nv = new VectorN(a).subtract(baseEncoder);
+        //wheels_update.update();
+        //telemetry.addData("position", wheels_update.position.toStr());
+        //telemetry.addData("angle", wheels_update.orientation.getAngle()*180/Math.PI);
     }
+
+
 }
