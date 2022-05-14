@@ -83,6 +83,7 @@ public class Movement2 {
     private double[] arr = {0,0,0,0};
     private VectorN baseEncoder = new VectorN(arr);
     public VectorN nv = new VectorN(arr);
+    public AccelPositioning positioning;
 
     public Movement2(Telemetry globalTelemetry, ElapsedTime globalRuntime, HardwareMap hardwareMap) {
         telemetry = globalTelemetry;
@@ -94,6 +95,7 @@ public class Movement2 {
         telemetry.addData("movement", "init");
         telemetry.update();
         wheels_update = new WheelsUpdate(telemetry, FLmotor,FRmotor,BLmotor,BRmotor);
+        positioning =  new AccelPositioning(hardwareMap, telemetry);
         resetValues();
     }
 
@@ -119,8 +121,8 @@ public class Movement2 {
     }
 
     public void gamepadMoves(Gamepad gamepad){
-        double lx = gamepad.left_stick_x+(gamepad.dpad_left?-1:0)+(gamepad.dpad_right?1:0),
-                ly = gamepad.left_stick_y+(gamepad.dpad_up?-1:0)+(gamepad.dpad_down?1:0);
+        double lx = gamepad.left_stick_x+(gamepad.dpad_left?-1:0)+(gamepad.dpad_right?1:0)+(gamepad.x?-.4:0)+(gamepad.b?+.4:0),
+                ly = gamepad.left_stick_y+(gamepad.dpad_up?-1:0)+(gamepad.dpad_down?1:0)+(gamepad.a?.4:0)+(gamepad.y?-.4:0);
         double a = Math.abs(ly), b = Math.abs(lx);
         front = a<.1 ? 0 : a<.9 ? (a-.1)*1.25*Math.signum(ly) : Math.signum(ly);
         turn = b<.1 ? 0 : b<.9 ? (b-.1)*1.25*Math.signum(lx) : Math.signum(lx);
@@ -140,31 +142,32 @@ public class Movement2 {
         //telemetry.addData("i1", i[0]);
         //telemetry.addData("power2", powers[1]);
         FLmotor.setPower(Range.clip(powers[0], -1.0, 1.0));
-        FRmotor.setPower(Range.clip(powers[1], -1.0, 1.0));
+       // FLmotor.setPower(0.);
+       FRmotor.setPower(Range.clip(powers[1], -1.0, 1.0));
+       // FRmotor.setPower(0.);
         BLmotor.setPower(Range.clip(powers[0], -1.0, 1.0));
-        BRmotor.setPower(Range.clip(powers[1], -1.0, 1.0));
+       BRmotor.setPower(Range.clip(powers[1], -1.0, 1.0));
+        // BRmotor.setPower(0.);
     }
     public double rotationIndex(){
-        return (nv.coordinates[0]+nv.coordinates[2]-nv.coordinates[1]-nv.coordinates[3])/4/3745;
+        return (nv.coordinates[0]+nv.coordinates[2]-nv.coordinates[1]-nv.coordinates[3])/4; //2748.6
     }
 
-    public double pointTowards(Vector point){
-        Vector vA = point.minus(wheels_update.position);
-        double angle = vA.getAngle();
-        double currentAngle = wheels_update.orientation.getAngle();
-        double offset = angle - currentAngle;
-        if (0 < offset && offset < 250 || offset < -250){
-            turn = 1;
-        } else {
-            turn = -1;
-        }
-        return vA.norm;
+    public double pointTowards(double a){
+        a = (a+180)%360-180;
+        double currentAngle = positioning.getAngle();
+        double offset = a - currentAngle;
+        if (offset<-180) offset += 360;
+        if (offset > 180) offset -= 360;
+        turn = Range.clip(Math.abs(offset)/100,.2,1) * (offset>0 && offset<180 ? -1: 1);
+        if (Math.abs(offset) < 2) turn = 0;
+        return turn; //offset;
     }
 
-    public void moveTowards(Vector point){
+    /*public void moveTowards(Vector point){
         double dist = pointTowards(point);
         front = dist < 10 ? 0 : dist < 100? .1 : 1;
-    }
+    }*/
 
     public void update(){
         double[] a = {FLmotor.getCurrentPosition(),FRmotor.getCurrentPosition(),BLmotor.getCurrentPosition(),BRmotor.getCurrentPosition()};

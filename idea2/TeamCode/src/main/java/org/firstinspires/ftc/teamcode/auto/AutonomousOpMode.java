@@ -47,7 +47,7 @@ public class AutonomousOpMode extends OpMode {
             arm.closeGripper();
             arm.setPresetPosition(0);
         }
-        movement.moveTowards(new Vector(0,0));
+        //movement.moveTowards(new Vector(0,0));
         first_return=false;
     }
 

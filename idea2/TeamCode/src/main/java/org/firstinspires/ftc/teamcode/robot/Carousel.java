@@ -17,7 +17,7 @@ public class Carousel {
     private DcMotorEx CarouselMotor;
 
     private double velocity;
-    public static double maxVelocity = 2e3;
+    public static double maxVelocity = 1e3;
 
     public Carousel(Telemetry globalTelemetry, ElapsedTime globalRuntime, HardwareMap hardwareMap) {
         telemetry = globalTelemetry;

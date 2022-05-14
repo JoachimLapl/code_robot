@@ -67,7 +67,7 @@ public class Arm {
     }
     public void keepPosition(double ticks, double DeltaT) {
         double diff = ((getPosition()+ticks+100-relative)%500-100);
-        velocity = (int) Math.min(Math.max(diff/DeltaT/5,-2e3),2e3);
+        velocity = (int) Math.min(Math.max(diff/DeltaT/2,-2e3),2e3);
     }
     public void movestick(Gamepad gamepad) {
         arm_pos += gamepad.right_stick_y;
