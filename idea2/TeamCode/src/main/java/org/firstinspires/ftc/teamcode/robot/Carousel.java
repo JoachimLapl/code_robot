@@ -28,6 +28,7 @@ public class Carousel {
     }
     public void reset(){velocity=0;}
     public void maxSpeed(){velocity=maxVelocity;}
+    public void maxSpeed(int i){velocity=Range.clip(i,-1,1)*maxVelocity;}
     public void increaseSpeed(double speed){velocity=Math.min(velocity+100, maxVelocity);}
     public void increaseSpeed(){increaseSpeed(100);
     }
