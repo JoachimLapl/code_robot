@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.auto;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -24,7 +23,6 @@ public class AutonomousOpMode extends OpMode {
 
     @Override
     public void init() {
-        telemetry = new MultipleTelemetry(telemetry);
         movement = new Movement2(telemetry, runtime, hardwareMap);
         carousel = new Carousel(telemetry, runtime, hardwareMap);
         arm = new Arm(telemetry, hardwareMap);
@@ -59,13 +57,7 @@ public class AutonomousOpMode extends OpMode {
         if (first_freight_in) {
             if (time > goToWH_time) {
                 goToWareHouse();
-            } else {
-
             }
-        } else {
-            /*
-            TODO: find the right position where to put the freight and put the freight in the shipping hub
-             */
         }
         arm.apply(DeltaT);
         carousel.apply();

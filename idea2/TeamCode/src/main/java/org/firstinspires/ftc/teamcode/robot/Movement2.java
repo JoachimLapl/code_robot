@@ -120,13 +120,16 @@ public class Movement2 {
         );
     }
 
-    public void gamepadMoves(Gamepad gamepad){
-        double lx = gamepad.left_stick_x+(gamepad.dpad_left?-1:0)+(gamepad.dpad_right?1:0)+(gamepad.x?-.4:0)+(gamepad.b?+.4:0),
-                ly = gamepad.left_stick_y+(gamepad.dpad_up?-1:0)+(gamepad.dpad_down?1:0)+(gamepad.a?.4:0)+(gamepad.y?-.4:0);
+    public void gamepadMoves(Gamepad gamepad, boolean doubleMode){
+        double lx = gamepad.left_stick_x+(gamepad.dpad_left?-1:0)+(doubleMode? ((gamepad.dpad_right?1:0)+(gamepad.x?-.4:0)+(gamepad.b?+.4:0)):0),
+                ly = gamepad.left_stick_y+(gamepad.dpad_up?-1:0)+(doubleMode? ((gamepad.dpad_down?1:0)+(gamepad.a?.4:0)+(gamepad.y?-.4:0)):((gamepad.right_trigger-gamepad.left_trigger)*.4));
         double a = Math.abs(ly), b = Math.abs(lx);
         front = a<.1 ? 0 : a<.9 ? (a-.1)*1.25*Math.signum(ly) : Math.signum(ly);
         turn = b<.1 ? 0 : b<.9 ? (b-.1)*1.25*Math.signum(lx) : Math.signum(lx);
         //turn += (gamepad.left_bumper ? .25 : 0) - (gamepad.right_bumper ? .25 : 0);
+    }
+    public void gamepadMoves(Gamepad gamepad){
+        gamepadMoves(gamepad, false);
     }
 
     public void apply() {

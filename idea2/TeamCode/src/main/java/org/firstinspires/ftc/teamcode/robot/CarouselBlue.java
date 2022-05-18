@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class Carousel {
+public class CarouselBlue {
     private Telemetry telemetry;
     private ElapsedTime runtime;
     private double lastRuntime = 0.0;
@@ -19,16 +19,16 @@ public class Carousel {
     private double velocity;
     public static double maxVelocity = 1500;
 
-    public Carousel(Telemetry globalTelemetry, ElapsedTime globalRuntime, HardwareMap hardwareMap) {
+    public CarouselBlue(Telemetry globalTelemetry, ElapsedTime globalRuntime, HardwareMap hardwareMap) {
         telemetry = globalTelemetry;
         runtime = globalRuntime;
         CarouselMotor = hardwareMap.get(DcMotorEx.class, "carousel_motor");
-        CarouselMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        CarouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         CarouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void reset(){velocity=0;}
     public void maxSpeed(){velocity=maxVelocity;}
-    public void maxSpeed(int i){velocity=Range.clip(i,-1,1)*maxVelocity;}
+    public void maxSpeed(int i){velocity= Range.clip(i,-1,1)*maxVelocity;}
     public void increaseSpeed(double speed){velocity=Math.min(velocity+100, maxVelocity);}
     public void increaseSpeed(){increaseSpeed(100);
     }

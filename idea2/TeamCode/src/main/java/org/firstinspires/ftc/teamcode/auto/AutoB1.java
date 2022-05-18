@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.auto;
 import android.graphics.Color;
 
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -32,13 +31,17 @@ public class AutoB1 extends LinearOpMode {
     @Override
     public void runOpMode() {
         // INIT //
-        telemetry = new MultipleTelemetry(telemetry);
         movement = new Movement2(telemetry, runtime, hardwareMap);
         carousel = new Carousel(telemetry, runtime, hardwareMap);
         arm = new Arm(telemetry, hardwareMap);
-        arm.closeGripper();
+        arm.openGripper();
         waitForStart();
-
+        arm.closeGripper();
+        arm.apply(-0.02);
+        sleep(1000);
+        arm.setPresetPosition(1);
+        arm.apply(-0.02);
+        sleep(1000);
         // LOOP //
         move(400);    // avance de 200 ticks
         pointTowards(85);    // se tourne vers -85 degrés
@@ -48,10 +51,18 @@ public class AutoB1 extends LinearOpMode {
         move(-100);
         turnCarousel();
         rectMove(100);
-        pointTowards(0);
-        rectMove(600);
-        sleepT(100);
+        pointTowards(-10);
+        rectMove(1000);
+        sleepT(250);
+        pointTowards(90);
+        move(-300,0.4);
+        sleepT(250);
         arm.setPresetPosition(0);
+        arm.apply(-0.02);
+        sleep(1000);
+        arm.openGripper();
+        arm.apply(-0.02);
+        sleep(1000);
 
         // Pour s'assurer que la position de la pince est la bonne à la fin du programme
         while (opModeIsActive()){

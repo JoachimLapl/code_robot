@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 
 import org.firstinspires.ftc.teamcode.robot.AccelPositioning;
 import org.firstinspires.ftc.teamcode.robot.Arm;
@@ -14,7 +13,7 @@ import org.firstinspires.ftc.teamcode.robot.Carousel;
 import org.firstinspires.ftc.teamcode.robot.Movement2;
 import org.firstinspires.ftc.teamcode.robot.Vector;
 
-@TeleOp(name="Manual Solo")
+@TeleOp(name="Manual Solo Rouge")
 public class ManualSolo  extends OpMode {
 
 
@@ -33,7 +32,6 @@ public class ManualSolo  extends OpMode {
     ///////////////////////////////////////////////////////// OPMODE METHODS /////////////////////////////////////////////////////////
     @Override
     public void init() {
-        telemetry = new MultipleTelemetry(telemetry);
         movement = new Movement2(telemetry, runtime, hardwareMap);
         carousel = new Carousel(telemetry, runtime, hardwareMap);
         arm = new Arm(telemetry, hardwareMap);
@@ -79,11 +77,11 @@ public class ManualSolo  extends OpMode {
             arm.openGripper();
         } else if (gamepad1.y){
             arm.closeGripper();
-        };
-        arm.movestick(gamepad1);
-        if (gamepad1.start){
-            //movement.pointTowards(new Vector(0,0));
         }
+        arm.movestick(gamepad1);
+        /*if (gamepad1.start){
+            //movement.pointTowards(new Vector(0,0));
+        }*/
         //------ Carousel ------//
         if (gamepad1.right_bumper){
             carousel.maxSpeed();

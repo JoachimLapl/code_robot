@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.auto;
 import android.graphics.Color;
 
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -47,20 +46,45 @@ public class AutoB2 extends LinearOpMode {
     @Override
     public void runOpMode() {
         // INIT //
-        telemetry = new MultipleTelemetry(telemetry);
         movement = new Movement2(telemetry, runtime, hardwareMap);
         carousel = new Carousel(telemetry, runtime, hardwareMap);
         arm = new Arm(telemetry, hardwareMap);
-        arm.closeGripper();
+        arm.openGripper();
+        arm.apply(-0.02);
+        sleep(250);
         waitForStart();
-
+        arm.closeGripper();
+        arm.apply(-0.02);
+        sleep(1000);
+        arm.setPresetPosition(1);
+        arm.apply(-0.02);
+        sleep(1000);
         // LOOP //
-        move(600);    // avance de 200 ticks
-        pointTowards(-90);    // se tourne vers -85 degrés
-        move(-3000,.4);  // recule de 2500 ticks
-        sleepT(100);
-        arm.setPresetPosition(0);
+        move(2650);    // avance de 1000 ticks
+        pointTowards(90);
+        move(-400,0.4);
+        arm.setPresetPosition(2);
+        arm.apply(-0.02);
+        sleep(3000);
+        arm.openGripper();
+        arm.apply(-0.02);
+        sleep(500);
+        arm.setPresetPosition(1);
+        arm.apply(-0.02);
+        sleep(3000);
+        arm.closeGripper();
+        arm.apply(-0.02);
+        move(400,0.4);
+        pointTowards(0);    // se tourne vers -85 degrés
+        sleepT(200);
+        move(-1200);
+        sleepT(200);
+        pointTowards(-90);
+        move(-3000,.6);  // recule de 2500 ticks
 
+        sleepT(200);
+        arm.setPresetPosition(0);
+        arm.apply(-0.02);
         // Pour s'assurer que la position de la pince est la bonne à la fin du programme
         while (opModeIsActive()){
             update();

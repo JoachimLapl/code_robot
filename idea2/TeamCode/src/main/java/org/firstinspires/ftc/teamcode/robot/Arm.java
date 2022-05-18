@@ -31,7 +31,9 @@ package org.firstinspires.ftc.teamcode.robot;
 
 // import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -43,26 +45,35 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 // @Config
 public class Arm {
     private Servo pince_servo;
-    public DcMotorEx arm_motor;
-
+    //public DcMotorEx arm_motor;
+    public DcMotor arm_motor;
     private Telemetry telemetry;
 
     private double position;
     private int velocity = 0;
 
     private static double openPosition = 0.8;         // requires testing
-    private static double closePosition = 0.5;        // requires testing
+    private static double closePosition = 0.4;        // requires testing 0.5
 
-    public static double[] preset = { 0, -30, -280, -327, -355 };
-    public double arm_pos = preset[0];
-    public double relative;
-    private int pos_index = 0;
+    //public static double[] preset = { 0, -30, -280, -327, -355 };
+    public static int[] preset = { 0, 300, 2350, 2650, 3000 };
+    public int pos_index = 0;
 
+    private int relative = 100;
+    public int arm_pos = 0;
 
     public Arm(Telemetry globalTelemetry, HardwareMap hardwareMap) {
         telemetry = globalTelemetry;
-        arm_motor = hardwareMap.get(DcMotorEx.class, "arm_motor"); arm_motor.setDirection(DcMotorEx.Direction.FORWARD);
-        relative = getPosition();
+        //arm_motor = hardwareMap.get(DcMotorEx.class, "arm_motor"); arm_motor.setDirection(DcMotorEx.Direction.FORWARD);
+        arm_motor = hardwareMap.get(DcMotor.class, "arm_motor");
+        arm_motor.setDirection(DcMotor.Direction.FORWARD);
+        relative = 0; //getPosition();
+        arm_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm_motor.setTargetPosition(0);
+
+        arm_motor.setPower(0.6);
+        arm_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pince_servo = hardwareMap.get(Servo.class, "bucket_servo"); pince_servo.setDirection(Servo.Direction.FORWARD);
     }
     public void keepPosition(double ticks, double DeltaT) {
@@ -85,7 +96,10 @@ public class Arm {
         pince_servo.setPosition(closePosition);
     }
     public void apply(double DeltaT) {
-        keepPosition(arm_pos, DeltaT);
-        arm_motor.setVelocity(velocity);
+        arm_motor.setTargetPosition((int) arm_pos);
+
+
+        //keepPosition(arm_pos, DeltaT);
+        //arm_motor.setVelocity(velocity);
     }
 }
